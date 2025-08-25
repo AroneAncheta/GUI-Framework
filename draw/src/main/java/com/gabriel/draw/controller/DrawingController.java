@@ -10,6 +10,8 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import com.gabriel.draw.model.Rectangle;
+import com.gabriel.draw.model.Ellipse;
 
 public class DrawingController  implements MouseListener, MouseMotionListener {
     private Point end;
@@ -41,6 +43,17 @@ public class DrawingController  implements MouseListener, MouseMotionListener {
                 currentShape.getRendererService().render(drawingView.getGraphics(), currentShape,false );
                 appService.setDrawMode(DrawMode.MousePressed);
 
+            } else if (appService.getShapeMode() == ShapeMode.Rectangle) {
+                start = e.getPoint();
+                currentShape = new Rectangle(start, start);
+                currentShape.getRendererService().render(drawingView.getGraphics(), currentShape, false);
+                appService.setDrawMode(DrawMode.MousePressed);
+
+            } else if (appService.getShapeMode() == ShapeMode.Ellipse) {
+                start = e.getPoint();
+                currentShape = new Ellipse(start, start);
+                currentShape.getRendererService().render(drawingView.getGraphics(), currentShape, false);
+                appService.setDrawMode(DrawMode.MousePressed);
             }
         }
     }
@@ -49,6 +62,16 @@ public class DrawingController  implements MouseListener, MouseMotionListener {
     public void mouseReleased(MouseEvent e) {
          if(appService.getDrawMode() == DrawMode.MousePressed){
              if(appService.getShapeMode() == ShapeMode.Line) {
+                 end = e.getPoint();
+                 appService.create(currentShape);
+                 appService.setDrawMode(DrawMode.Idle);
+
+             } else if (appService.getShapeMode() == ShapeMode.Rectangle) {
+                 end = e.getPoint();
+                 appService.create(currentShape);
+                 appService.setDrawMode(DrawMode.Idle);
+
+             } else if (appService.getShapeMode() == ShapeMode.Ellipse) {
                  end = e.getPoint();
                  appService.create(currentShape);
                  appService.setDrawMode(DrawMode.Idle);
@@ -69,11 +92,22 @@ public class DrawingController  implements MouseListener, MouseMotionListener {
     @Override
     public void mouseDragged(MouseEvent e) {
         if(appService.getDrawMode() == DrawMode.MousePressed) {
+            end = e.getPoint();
+
             if (appService.getShapeMode() == ShapeMode.Line) {
-                end = e.getPoint();
-                currentShape.getRendererService().render(drawingView.getGraphics(), currentShape,true );
-                appService.scale(currentShape,end);
-                currentShape.getRendererService().render(drawingView.getGraphics(), currentShape,true );
+                currentShape.getRendererService().render(drawingView.getGraphics(), currentShape, true);
+                appService.scale(currentShape, end);
+                currentShape.getRendererService().render(drawingView.getGraphics(), currentShape, true);
+
+            } else if (appService.getShapeMode() == ShapeMode.Rectangle) {
+                currentShape.getRendererService().render(drawingView.getGraphics(), currentShape, true);
+                appService.scale(currentShape, end);
+                currentShape.getRendererService().render(drawingView.getGraphics(), currentShape, true);
+
+            } else if (appService.getShapeMode() == ShapeMode.Ellipse) {
+                currentShape.getRendererService().render(drawingView.getGraphics(), currentShape, true);
+                appService.scale(currentShape, end);
+                currentShape.getRendererService().render(drawingView.getGraphics(), currentShape, true);
             }
         }
     }
